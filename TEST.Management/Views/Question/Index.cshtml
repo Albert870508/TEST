@@ -1,0 +1,225 @@
+﻿@model IPagedList<TEST.Exercise.Domain.Entities.Question>
+@using X.PagedList.Mvc.Core;
+@using X.PagedList;
+@using X.PagedList.Mvc.Core.Common;
+
+@{
+    Layout = null;
+}
+
+
+    <div id="UploadFilePanel" style="display:none;margin-bottom:10px;">
+        <form asp-controller="Question"  asp-action="UploadDateTemplateFile" data-ajax="true" data-ajax-method="post" enctype="multipart/form-data" data-ajax-begin="begin" data-ajax-success="success">
+            <div class="col-xs-9">
+                <input type="file" id="files" name="files" accept=".xlsx,xls" style="display:none" onchange="filesCheck(this);"  multiple />
+                <div class="input-group">
+                    <span class="input-group-btn">
+                        <a class="btn btn-default" onclick="$('input[id=files]').click();"><span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>&nbsp;&nbsp;选择文件</a>
+                    </span>
+                    <input id="fileCover" type="text" class="form-control" placeholder="未选择文件" disabled>
+                </div>
+            </div>
+            <div class="col-xs-3">
+                <button type="submit" class="btn btn-warning" onclick="return noFilesCheck();" >&nbsp;&nbsp;&nbsp;&nbsp;上传&nbsp;&nbsp;&nbsp;&nbsp;</button>
+            </div>
+        </form>
+    </div>
+
+    <div id="questionListContainer">
+        @*<div class="panel panel-default">
+            <div class="panel-heading">
+                <h3 class="panel-title">编辑面板</h3>
+            </div>
+            <div class="panel-body">                                
+                
+            </div>
+        </div>*@
+
+        <div class="container">
+            <fieldset>
+                <div class="form-inline">
+                    <form asp-controller="Question" asp-action="UploadDateTemplateFile" data-ajax="true" data-ajax-method="post" enctype="multipart/form-data" data-ajax-begin="begin" data-ajax-success="success">
+                        @*<label for="pageSize" class="control-label">每页指定记录数：</label>
+                        <div class="form-group">
+                            <input type="number" name="pageSize" id="pageSize" class="form-control" size="1" maxlength="4" min="1" max="1000" />
+                        </div>
+                        <label asp-for="@Model.FirstOrDefault().QuestionTypeId"></label>
+                        <div class="form-group">
+                            @Html.DropDownListFor(Model => Model.FirstOrDefault().QuestionTypeId, (SelectList)ViewData["QuestionType"], new { @class = "form-control", @autocomplete = "off" })
+                        </div>
+                        <input type="button" id="btnSearch" value="查询" class="btn btn-primary" />*@
+                        <input type="button" class="btn btn-default" onclick="download()" value="下载模板" />
+                        <input type="button" class="btn btn-default" onclick="upload()" value="批量上传" />
+                    </form>
+                </div>
+            </fieldset>
+        </div>
+        <div class="panel panel-default">
+            <div class="panel-heading">
+            </div>
+            <div class="panel-body">
+                <table class="table table-striped table-bordered table-hover">
+                    <thead>
+                        <tr>
+                            <th width="5%">
+                                <input id="selectAllBox" type="checkbox" value="false" />
+                            </th>
+                            <th width="10%">
+                                <label asp-for="@Model.FirstOrDefault().QuestionTypeName"></label>
+                            </th>
+                            <th width="35%">
+                                <label asp-for="@Model.FirstOrDefault().Content"></label>
+                            </th>
+                            <th width="10%">
+                                <label asp-for="@Model.FirstOrDefault().Answer"></label>
+                            </th>
+                            <th width="30%">
+                                <label asp-for="@Model.FirstOrDefault().AnswerNote"></label>
+                            </th>
+                            <th width="10%">
+
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var item in Model)
+                        {
+                            try
+                            {
+                                <tr id="@item.Id">
+                                    <td style="vertical-align:middle">
+                                        @Html.CheckBox("QuestionSelect", false, new { caId = item.Id })
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.QuestionTypeName)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.Content)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.Answer)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                        @Html.DisplayFor(modelItem => item.AnswerNote)
+                                    </td>
+                                    <td style="vertical-align:middle">
+                                    </td>
+                                </tr>
+                            }
+                            catch
+                            {
+                                <script>
+                                   $("#@item.Id").remove();
+                                </script>
+                            }
+                        }
+                    </tbody>
+                    <tfoot>
+                        <tr>
+                            <td class="text-muted" colspan="4">
+                                每页 @Model.PageSize 条记录，本页有 @Model.Count 条记录,共有 @Model.TotalItemCount 条记录。第 @(Model.PageCount < Model.PageNumber ? 0 : Model.PageNumber) 页，共 @Model.PageCount 页。
+                                @*这个条件表达式的目的是防止出现 记录为0的情况，会出现 总页数为0，而当前是第1页的情况。*@
+                            </td>
+                        </tr>
+                    </tfoot>
+                </table>
+                @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewData["CurrentSort"], searchString = ViewData["SearchString"], pageSize = ViewData["PageSize"] }), new PagedListRenderOptions { LinkToFirstPageFormat = "首页", LinkToNextPageFormat = "下一页", LinkToPreviousPageFormat = "上一页", LinkToLastPageFormat = "末页", MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false })*@
+                @Html.PagedListPager((IPagedList<TEST.Exercise.Domain.Entities.Question>)Model, pageIndex => Url.Action("Index", new { pageIndex, pageSize = @ViewData["PageSize"], searchString = ViewData["SearchString"] }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { LinkToFirstPageFormat = "首页", LinkToNextPageFormat = "下一页", LinkToPreviousPageFormat = "上一页", LinkToLastPageFormat = "末页", MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false, DisplayPageCountAndCurrentLocation = true, UlElementClasses = new[] { "pagination" }, ContainerDivClasses = new[] { "pagination-container" } }, new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "questionListContainer" }))
+            </div>
+        </div>
+    </div>
+
+
+<script>
+    $(function () {
+        $("#btnSearch").on("click", function () {            
+            $.ajax({
+                    type: "POST",
+                    url: "Question/QuestionList",
+                    data: JSON.stringify({
+                        PageIndex: "1",
+                        PageSize:$("#pageSize").val(),
+                        SearchString: $("#QuestionTypeId").val()
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            alert("修改成功！");
+                            $('#questionListContainer').html(data);
+                        }
+                    },
+                    failure: function (response) {
+                    
+                   }
+                })
+            
+        })
+    })       
+
+    function download() { //下载数据模板
+            //var type = $("#QuestionTypeId").find("option:selected").text();
+            window.location.href = "@Url.Action("DownloadDataTemplate")";
+    }
+
+    function upload() {//上传数据文件
+        layer.open({
+            title: "文件上传",
+            type: 1,
+            shade: 0,   //遮罩透明度
+            content: $("#UploadFilePanel"),
+            area:['580px','150px']
+        });
+    }
+    function begin() {//上传开始
+            
+    }
+    function success() {//上传成功
+            alert("上传成功");
+            $("#ActionPanel").load("Question/Index");
+    }
+
+
+
+
+    function noFilesCheck() {
+        if ($('#fileCover').val()=='') {
+            alert("请先选择文件");
+            return false;
+        }
+    }
+
+    $(function () {        
+        //上传文件选择
+        $('input[id=files]').change(function () {
+            $('#fileCover').val($(this).val());
+        });
+    });
+
+    //验证文件大小和类型
+    function filesCheck(ele) {
+        var filepath = $("input[name='files']").val();
+        var extStart = filepath.lastIndexOf(".");
+        var ext = filepath.substring(extStart, filepath.length).toUpperCase();
+        //检测允许的上传文件类型
+        if (ext != ".XLS" && ext != ".XLSX") {
+            alert("只能选择Excel文件");
+            $("input[name='files']").val('');
+            return false;
+        }
+
+        // 返回 KB，保留小数点后两位
+        var fileSize = ele.files[0].size / 1024;
+        //if (fileSize > 1500) {
+        //    Alert("The document size is not greater than 1.5 MB. Please select a correct document.");
+        //    $("input[name='files']").val('');
+        //    return false;
+        //}
+        if (ele.files[0].size<=0) {
+            alert("文件不能为空");
+            $("input[name='files']").val('');
+            return false;
+        }
+    }
+</script>
+

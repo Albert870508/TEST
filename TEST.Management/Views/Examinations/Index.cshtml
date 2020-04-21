@@ -1,0 +1,60 @@
+﻿
+@{
+    Layout = null;
+}
+
+    <div class="container">
+        <fieldset>
+            <legend><label class="control-label">添加考试</label></legend>
+        </fieldset>
+        <div class="form-inline">
+            <label for="StartTime" class="control-label">开始时间：</label>
+            <div class="form-group">
+                <input type="date" name="StartTime" id="StartTime" class="form-control" />
+            </div>
+            <label for="EndTime" class="control-label">结束时间：</label>
+            <div class="form-group">
+                <input type="date" name="EndTime" id="EndTime" class="form-control" />
+            </div>
+            <label for="Note" class="control-label">备注：</label>
+            <div class="form-group">
+                <input name="Note" id="Note" class="form-control" />
+            </div>
+            <input type="button" id="btnESave" value="添加" class="btn btn-default" />
+        </div>
+        
+    </div>
+
+<script>
+    $(function () {
+        $("#btnESave").on('click', function () {
+            if ($('#StartTime').val()=='' || $('#EndTime').val()=='') {
+                alert("开始时间或者结束时间不能为空");
+                return;
+            }
+            if ($('#StartTime').val()>$('#EndTime').val()) {
+                alert("开始时间不能大于结束时间");
+                return;
+            }
+            $.ajax({
+                    type: "POST",
+                    url: "Examinations/AddExaminations",
+                    data: JSON.stringify({
+                        StartTime: $("#StartTime").val().toString(),
+                        EndTime:$("#EndTime").val().toString(),
+                        Note: $("#Note").val()
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            alert("修改成功！");
+                        }
+                    },
+                    failure: function (response) {
+                    
+                   }
+                })
+        })
+    })
+</script>

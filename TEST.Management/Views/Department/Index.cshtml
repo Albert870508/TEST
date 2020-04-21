@@ -1,0 +1,128 @@
+﻿@model List<TEST.Exercise.Application.Departments.Dto.DepartmentDto>
+
+
+@{
+    Layout = null;
+}
+<div class="container">
+            <fieldset>
+                <div class="form-inline">
+                    <label asp-for="@Model.FirstOrDefault().Name"></label>
+                    <div class="form-group">
+                        <input id="DepartmentName" value="@ViewBag.DepartmentName" class="form-control" />
+                    </div>
+                    <input type="button" id="btnSearch" value="查询" class="btn btn-default" />&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    <input type="button" id="btnAdd" value="添加" class="btn btn-default" />
+                </div>
+            </fieldset>
+        </div>
+<div id="partmentListContainer">
+    <div class="panel panel-default">
+        <div class="panel-heading">
+        </div>
+        <div class="panel-body">
+            <table class="table table-striped table-bordered table-hover">
+                <thead>
+                    <tr>
+                        <th width="5%">
+                            <input id="selectAllBox" type="checkbox" value="false" />
+                        </th>
+                        <th width="70%">
+                            <label asp-for="@Model.FirstOrDefault().Name"></label>
+                        </th>
+                        
+                        <th width="10%">
+                            <label class="control-label">操作</label>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model)
+                    {
+                        try
+                        {                            
+                            <tr id="@item.Id">
+                                <td style="vertical-align:middle">
+                                    @Html.CheckBox("QuestionSelect", false, new { caId = item.Id })
+                                </td>
+                                <td style="vertical-align:middle">
+                                    @Html.DisplayFor(modelItem => item.Name)
+                                </td>                                
+                                <td style="vertical-align:middle">
+                                    <input id="@item.Id" type="button" value="删除" class="btn btn-warning"  onclick="deleteDepartmentById('@item.Id');"/>
+                                </td>
+                            </tr>
+                        }
+                        catch
+                        {
+                           
+                        }
+                    }
+                </tbody>
+                <tfoot>
+                    <tr>
+                        <td class="text-muted" colspan="4">
+                            
+                        </td>
+                    </tr>
+                </tfoot>
+            </table>
+          </div>
+    </div>
+</div>
+
+
+<script>
+    $(function () {
+        $("#btnAdd").on("click", function () {
+            if ($('#DepartmentName').val()=='') {
+                alert("名称不能为空");
+                return;
+            }
+            $.ajax({
+                    type: "POST",
+                    url: "Department/AddDepartment",
+                    data: JSON.stringify({
+                        Name: $("#DepartmentName").val()
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            alert("修改成功！");
+                            $("#ActionPanel").load("Department/Index");
+                        }
+                    },
+                    failure: function (response) {
+                    
+                   }
+            })            
+
+        })
+    })
+    $(function () {
+        $("#btnSearch").on("click", function () {            
+           $("#ActionPanel").load("Department/Index?departmentName="+$('#DepartmentName').val());
+        })
+    })
+
+    function deleteDepartmentById(departmentId) {        
+        $.ajax({
+            url: "Department/DeleteDepartment",
+            type: "POST",
+            dataType: "json",
+            data: {departmentId: departmentId},            
+            success: function (response) {
+                if (response) {
+                    alert("删除成功！");
+                    $("#ActionPanel").load("Department/Index");
+                }
+            },
+            failure: function (response) {
+
+            }
+        })
+    }
+
+</script>
+

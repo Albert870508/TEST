@@ -1,0 +1,56 @@
+﻿<style>
+    .wrap {
+        min-width: 98%;
+        position: absolute;
+        background: #eff3f6 bottom;
+        min-height: 85%;
+        overflow: hidden;
+    }
+
+    .left {
+        margin-left: 0px;
+        position: absolute;
+        box-sizing: border-box;
+        width: 200px;
+        height: 100%;
+        background-color: #ffffff;
+    }
+
+
+    .menu-title {
+        margin-left: 15px;
+        color: #828e9a;
+        padding-top: 10px;
+        padding-bottom: 10px;
+        font-size: 14px;
+        font-weight: bold;
+    }
+
+    .right {
+        box-sizing: border-box;
+        float: left;
+        box-sizing: border-box;
+        padding-left: 200px;
+        overflow-y: overlay;
+        overflow-x: hidden;
+        clear: both;
+        color: #717592;
+        min-width: 100%;
+        min-height: 500px;
+    }
+</style>
+<div class="wrap">
+    <!-- 左边内容 -->
+    <div id="left" class="left">
+        <div class="menu-title">后台管理</div>
+        <a href="#" class="list-group-item" id="QuestionType">类型设置</a>
+        <a href="#" class="list-group-item" id="Question">题目管理</a>
+        <a href="#" class="list-group-item" id="Examination">创建考试</a>
+        <a href="#" class="list-group-item" id="Department">部门信息</a>
+    </div>
+    <!-- 右边内容 -->
+    <div id="right" class="tab-content right">
+        <div id="ActionPanel" class="col-md-12">
+        </div>
+    </div>
+</div>

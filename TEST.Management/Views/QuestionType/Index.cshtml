@@ -1,0 +1,92 @@
+﻿@{
+    Layout = null;
+}
+
+
+    <div class="container">
+        <fieldset>
+            <legend>分值设定</legend>
+            <div class="form-inline">
+                <label for="SingleScore" class="control-label">单选题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["SingleScore"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))"
+                           id="SingleScore" size="1" maxlength="4" min="1" max="100" step="0.1" />
+                </div>
+                <label for="MultipleScore" class="control-label">多选题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["MultipleScore"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))"
+                           id="MultipleScore" size="1" maxlength="4" min="1" max="100" step="0.1" />
+                </div>
+                <label for="JudgeScore" class="control-label">判断题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["JudgeScore"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d\.]/.test(String.fromCharCode(event.keyCode)))"
+                           id="JudgeScore" size="1" maxlength="4" min="1" max="100" step="0.1" />
+                </div>
+            </div>
+         </fieldset>
+        <div style="height:50px;"></div>
+        <fieldset>
+            <legend>数量设定</legend>
+            <div class="form-inline">
+                <label for="SingleNumber" class="control-label">单选题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["SingleNumber"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                           id="SingleNumber" size="1" maxlength="4" min="1" max="1000" step="1" />
+                </div>
+                <label for="MultipleNumber" class="control-label">多选题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["MultipleNumber"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                           id="MultipleNumber" size="1" maxlength="4" min="1" max="1000" step="1" />
+                </div>
+                <label for="JudgeNumber" class="control-label">判断题</label>
+                <div class="form-group">
+                    <input class="form-control" type="number" value="@ViewData["JudgeNumber"]" 
+                           style="ime-mode:Disabled" onKeypress="return (/[\d]/.test(String.fromCharCode(event.keyCode)))"
+                           id="JudgeNumber" size="1" maxlength="4" min="1" max="1000" step="1" />
+                </div>                
+            </div>
+            <div class="form-inline" style="margin-top:10px;">
+                <label class="control-label">
+                    <b>温馨提示：</b>本题库中单选题共<span style="color:red;"><b>@ViewData["SingleTotalNumber"]</b></span>道，多选题共<span style="color:red;"><b>@ViewData["MultipleTotalNumber"]</b></span>道，判断题共<span style="color:red;"><b>@ViewData["JudgeTotalNumber"]</b></span>道，各类型随机出题数量不能超过对应上限
+                </label>
+             </div>
+</fieldset>
+    </div>
+    
+    <div style="margin-top:35px;width:90%; text-align:center">
+        <input type="button"  value="保存" id="btnQuestionSave" class="btn btn-primary">
+    </div>
+    
+    <script>
+        $(function () {
+            $("#btnQuestionSave").on("click", function () {
+                $.ajax({
+                    type: "POST",
+                    url: "QuestionType/UpdateScoreAndNumber",
+                    data: JSON.stringify({
+                        SingleScore: $("#SingleScore").val(),
+                        MultipleScore:$("#MultipleScore").val(),
+                        JudgeScore: $("#JudgeScore").val(),
+                        SingleNumber: $("#SingleNumber").val(),
+                        MultipleNumber:$("#MultipleNumber").val(),
+                        JudgeNumber:$("#JudgeNumber").val()
+                    }),
+                    contentType: "application/json; charset=utf-8",
+                    dataType: "json",
+                    success: function (response) {
+                        if (response) {
+                            alert("修改成功！");
+                        }
+                    },
+                    failure: function (response) {
+                    
+                   }
+                })
+            })            
+        })
+    </script>

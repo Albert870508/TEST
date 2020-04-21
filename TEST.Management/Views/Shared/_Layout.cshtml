@@ -1,0 +1,51 @@
+﻿<!DOCTYPE html>
+<html lang="ch">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>TEST.Management</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.css" />
+    <link rel="stylesheet" href="~/css/site.css" />
+    <link href="~/css/PagedList.css" rel="stylesheet" />
+</head>
+<body>
+    <header>
+        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+            <div class="container">
+                <a class="navbar-brand" asp-area="" asp-controller="Account" asp-action="Login">后台管理</a>
+            </div>
+        </nav>
+    </header>
+    <div class="container-fluid">
+        @RenderBody()
+    </div>
+
+    @*<footer class="border-top footer text-muted">
+            <div class="container">
+                &copy; 后台管理系统 - <a asp-area="" asp-controller="Home" asp-action="Privacy">版权</a>
+            </div>
+        </footer>*@
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+    <script src="~/lib/jquery-ajax-unobtrusive-master/src/jquery.unobtrusive-ajax.js"></script>
+    <script src="~/lib/layer-v3.1.1/layer/layer.js"></script>
+    @RenderSection("Scripts", required: false)
+    <script>
+        $(function () {
+            $("#QuestionType").click(function () {
+                $("#ActionPanel").load("QuestionType/Index");
+            });
+            $("#Question").click(function () {
+                $("#ActionPanel").load("Question/Index");
+            });
+            $("#Examination").click(function () {
+                $("#ActionPanel").load("Examinations/Index");
+            });
+            $("#Department").click(function () {
+                $("#ActionPanel").load("Department/Index");
+            });
+        })
+    </script>
+</body>
+</html>
