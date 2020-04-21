@@ -16,5 +16,12 @@ namespace TEST.Exercise.Application.Users
         /// <param name="tokenOptions"></param>
         /// <returns></returns>
         Result<LoginOutput> Login(string weChatOpenId, TokenProvider tokenOptions);
+
+        /// <summary>
+        /// 用户完善个人信息
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <returns></returns>
+        Result<bool> ImproveInformation(long UserId,UserInput userInput);
     }
 }

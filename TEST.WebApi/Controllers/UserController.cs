@@ -51,5 +51,10 @@ namespace TEST.WebApi.Controllers
             string weChatOpenId = WeChatHelper.GetSession(loginCode).OpenId;//根据loginCode获取openid
             return _userService.Login(weChatOpenId, _tokenOption);
         }
+        [HttpPost]
+        public Result<bool> ImproveInformation([FromBody]UserInput userInput)
+        {
+            return _userService.ImproveInformation(long.Parse(User.Identity.Name), userInput);
+        }
     }
 }

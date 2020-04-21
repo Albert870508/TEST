@@ -22,4 +22,11 @@ namespace TEST.Exercise.Application.Users.Dto
         /// </summary>
         public string Token { get; set; }
     }
+
+    public class UserInput 
+    {
+        public string UserName { get; set; }
+        public string UserPhone { get; set; }
+        public string UserDempartment { get; set; }
+    }
 }

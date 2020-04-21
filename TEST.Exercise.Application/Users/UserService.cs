@@ -66,5 +66,31 @@ namespace TEST.Exercise.Application.Users
                 });
             }
         }
+        /// <summary>
+        /// 完善个人信息
+        /// </summary>
+        /// <param name="userInput"></param>
+        /// <returns></returns>
+        public Result<bool> ImproveInformation(long UserId, UserInput userInput)
+        {
+
+            if (!_user.Any(m=>m.Id==UserId))
+            {
+                return Result<Boolean>.Fail("用户不存在");
+            }
+            if (String.IsNullOrEmpty(userInput.UserName) || string.IsNullOrEmpty(userInput.UserPhone) || string.IsNullOrEmpty(userInput.UserDempartment))
+            {
+                return Result<Boolean>.Fail("不能为空");
+            }
+            else
+            {
+                _user.FirstOrDefault(UserId).UserName = userInput.UserName;
+                _user.FirstOrDefault(UserId).PhoneNumber = userInput.UserPhone;
+                _user.FirstOrDefault(UserId).DepartmentId = userInput.UserDempartment;
+                _unitOfWork.SaveChanges();
+                return Result<Boolean>.Success(true);
+            }
+
+        }
     }
 }
