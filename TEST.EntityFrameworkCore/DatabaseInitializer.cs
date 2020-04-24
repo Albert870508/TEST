@@ -36,7 +36,7 @@ namespace TEST.EntityFrameworkCore
 
                     if (!db.Questions.Any(m => true))
                     {
-                        
+                        InitializeQuestions(db);
                     }                    
 
                     db.SaveChanges();
@@ -89,6 +89,42 @@ namespace TEST.EntityFrameworkCore
                 }
             }
             db.Departments.AddRange(departments);
+        }
+
+        private static void InitializeQuestions(TESTDbContext db)
+        {
+            string questionFilePath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot", "tiku");
+            foreach (string fileName in Directory.GetFiles(questionFilePath))
+            {
+                string questionType = Path.GetFileNameWithoutExtension(fileName);
+                long questionTypeId = 0;
+                if (questionType=="单选")
+                {
+                    questionTypeId=db.QuestionTypes.FirstOrDefault(n => n.Name == "单选").Id;
+                }
+                if (questionType == "多选")
+                {
+                    questionTypeId = db.QuestionTypes.FirstOrDefault(n => n.Name == "多选").Id;
+                }
+                if (questionType == "判断")
+                {
+                    questionTypeId = db.QuestionTypes.FirstOrDefault(n => n.Name == "判断").Id;
+                }
+                if (questionType == "填空")
+                {
+                    questionTypeId = db.QuestionTypes.FirstOrDefault(n => n.Name == "填空").Id;
+                }
+                if (questionType == "简答")
+                {
+                    questionTypeId = db.QuestionTypes.FirstOrDefault(n => n.Name == "简答").Id;
+                }
+                if (questionType == "案例分析")
+                {
+                    questionTypeId = db.QuestionTypes.FirstOrDefault(n => n.Name == "案例分析").Id;
+                }
+                List<Question> questions = QuestionFileHelper.GetQuestionsByFile(fileName,questionType, questionTypeId);
+                db.Questions.AddRange(questions);
+            }
         }
 
         private static void Questions(TESTDbContext db)

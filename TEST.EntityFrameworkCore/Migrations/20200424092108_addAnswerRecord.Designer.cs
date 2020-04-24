@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TEST.EntityFrameworkCore;
 
 namespace TEST.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(TESTDbContext))]
-    partial class TESTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200424092108_addAnswerRecord")]
+    partial class addAnswerRecord
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -42,28 +44,6 @@ namespace TEST.EntityFrameworkCore.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Administrators");
-                });
-
-            modelBuilder.Entity("TEST.Exercise.Domain.Entities.AnswerRecord", b =>
-                {
-                    b.Property<long>("Id")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("CreateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("QuestionId")
-                        .HasColumnType("bigint");
-
-                    b.Property<DateTime>("UpdateTime")
-                        .HasColumnType("datetime2");
-
-                    b.Property<long>("UserId")
-                        .HasColumnType("bigint");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("AnswerRecords");
                 });
 
             modelBuilder.Entity("TEST.Exercise.Domain.Entities.Department", b =>

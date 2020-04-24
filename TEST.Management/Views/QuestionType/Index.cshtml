@@ -6,15 +6,15 @@
     <div id="UploadQuestionTypePanel" style="display:none;margin-bottom:10px;">
         <input hidden="hidden" id="Id" />
         <div class="col-xs-12">
-            <label class="control-label" for="Name" id="QuestionType">类型</label>
+            <label class="control-label" for="Name">类型</label>
             <input class="form-control" disabled="disabled" id="Name" />
         </div>
         <div class="col-xs-12">
-            <label class="control-label" for="Score" id="QuestionType">分值</label>
+            <label class="control-label" for="Score">分值</label>
             <input class="form-control" id="Score" />
         </div>
         <div class="col-xs-12">
-            <label class="control-label" for="Number" id="QuestionType">随机出题数量</label>
+            <label class="control-label" for="Number">随机出题数量</label>
             <input class="form-control" id="Number" />
         </div>        
     </div>    
@@ -98,26 +98,14 @@
             area: ['350px', '300px'],
             btn: ['确定', '取消'],
             yes: function () {
-
-            },
-            btn2: function () {
-                layer.closeAll();
-            }
-        });
-    }
-
-    $(function () {
-        $("#btnQuestionSave").on("click", function () {
-            $.ajax({
+                $.ajax({
                 type: "POST",
                 url: "QuestionType/UpdateScoreAndNumber",
                 data: JSON.stringify({
-                    SingleScore: $("#SingleScore").val(),
-                    MultipleScore: $("#MultipleScore").val(),
-                    JudgeScore: $("#JudgeScore").val(),
-                    SingleNumber: $("#SingleNumber").val(),
-                    MultipleNumber: $("#MultipleNumber").val(),
-                    JudgeNumber: $("#JudgeNumber").val()
+                    Id:id,
+                    Score: $("#Score").val(),
+                    Number: $("#Number").val()
+                    
                 }),
                 contentType: "application/json; charset=utf-8",
                 dataType: "json",
@@ -130,6 +118,12 @@
 
                 }
             })
-        })
-    })
+            },
+            btn2: function () {
+                layer.closeAll();
+            }
+        });
+    }
+
+    
 </script>

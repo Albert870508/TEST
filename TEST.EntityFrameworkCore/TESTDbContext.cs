@@ -41,6 +41,11 @@ namespace TEST.EntityFrameworkCore
         /// </summary>
         public DbSet<Examination> Examinations { get; set; }
 
+        /// <summary>
+        /// 答题记录表
+        /// </summary>
+        public DbSet<AnswerRecord> AnswerRecords { get; set; }
+
         public TESTDbContext(DbContextOptions<TESTDbContext> options)
             : base(options)
         {

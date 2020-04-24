@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.AspNetCore.Mvc;
+using TEST.Api.Result;
 using TEST.Exercise.Application.Exercises;
 using TEST.Exercise.Application.Exercises.Dto;
 using TEST.Exercise.Application.ExerciseType;
@@ -33,26 +34,9 @@ namespace TEST.Management.Controllers
             return View(questionTypes);
         }
         [HttpPost]
-        public int UpdateScoreAndNumber([FromBody]QuestionTypeScoreAndNumber uestionTypeScoreAndNumber)
+        public Result<bool> UpdateScoreAndNumber([FromBody]QuestionType questionType)
         {
-            if (uestionTypeScoreAndNumber != null)
-            {
-                if (_exerciseTypeService.UpdateQuestionTypeScoreAndNumber(
-                    double.Parse(uestionTypeScoreAndNumber.SingleScore),double.Parse(uestionTypeScoreAndNumber.MultipleScore),
-                    double.Parse(uestionTypeScoreAndNumber.JudgeScore),Int32.Parse(uestionTypeScoreAndNumber.SingleNumber),
-                    Int32.Parse(uestionTypeScoreAndNumber.MultipleNumber),Int32.Parse(uestionTypeScoreAndNumber.JudgeNumber)).IsSuccess)
-                {
-                    return 1;
-                }
-                else
-                {
-                    return -1;
-                }
-            }
-            else
-            {
-                return -1;
-            }
+            return _exerciseTypeService.UpdateScoreAndNumber(questionType);
         }
         
     }

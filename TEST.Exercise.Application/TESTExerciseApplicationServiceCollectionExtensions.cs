@@ -1,5 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using TEST.Exercise.Application.Admin;
+using TEST.Exercise.Application.AnswerRecords;
 using TEST.Exercise.Application.Departments;
 using TEST.Exercise.Application.Examinations;
 using TEST.Exercise.Application.Exercises;
@@ -19,7 +20,8 @@ namespace TEST.Exercise.Application
             services.AddScoped<IExerciseService, ExerciseService>();
             services.AddScoped<IExerciseTypeService, ExerciseTypeService>();
             services.AddScoped<IScoreService, ScoreService>();
-            services.AddScoped<IUserService, UserService>();            
+            services.AddScoped<IUserService, UserService>();
+            services.AddScoped<IAnswerRecordService, AnswerRecordService>();
             return services;
         }
     }

@@ -9,10 +9,15 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.Tokens;
 using TEST.Api.Result;
 using TEST.Api.Route;
+using TEST.Exercise.Application.AnswerRecords;
+using TEST.Exercise.Application.AnswerRecords.Dto;
 using TEST.Exercise.Application.Departments;
 using TEST.Exercise.Application.Departments.Dto;
 using TEST.Exercise.Application.Examinations;
 using TEST.Exercise.Application.Examinations.Dto;
+using TEST.Exercise.Application.Exercises;
+using TEST.Exercise.Application.Exercises.Dto;
+using TEST.Exercise.Application.ExerciseType;
 using TEST.Exercise.Application.Scores;
 using TEST.Exercise.Application.Scores.Dto;
 using TEST.Exercise.Application.Users;
@@ -31,17 +36,24 @@ namespace TEST.Management.Controllers
         private readonly IExaminationService _iExaminationService;
         private readonly IScoreService _iScoreService;
         private readonly IUserService _userService;
+        private readonly IExerciseService _exerciseService;
+        private readonly IExerciseTypeService _exerciseTypeService;
         private readonly TokenProvider _tokenOption;
+        private readonly IAnswerRecordService _answerRecordService;
+
 
         public OpenApiController(IDepartmentService iDepartmentService,
             IExaminationService iExaminationService, IScoreService iScoreService,
-            IConfiguration configuration, IUserService userService)
+            IConfiguration configuration, IUserService userService, IAnswerRecordService answerRecordService,
+            IExerciseService exerciseService, IExerciseTypeService exerciseTypeService)
         {
+            _answerRecordService = answerRecordService;
             _iDepartmentService = iDepartmentService;
             _iExaminationService = iExaminationService;
             _iScoreService = iScoreService;
             _userService = userService;
-
+            _exerciseService = exerciseService;
+            _exerciseTypeService = exerciseTypeService;
             var signingKey = new SymmetricSecurityKey(Encoding.ASCII.GetBytes(configuration.GetSection("Audience:Secret").Value));
             var issuer = configuration.GetSection("Audience:Issuer").Value;
             var audience = configuration.GetSection("Audience:Audience").Value;
@@ -126,6 +138,67 @@ namespace TEST.Management.Controllers
             return _userService.ImproveInformation(long.Parse(User.Identity.Name), userInput);
         }
         #endregion
+
+        /// <summary>
+        /// 获取某个类型的所有的题
+        /// </summary>
+        /// <param name="questionType"></param>
+        /// <returns></returns>
+        [HttpGet]
+        public Result<List<QuestionsDto>> GetAllQuestionsByType([FromQuery]string questionType)
+        {
+            string questionTypeId = null;
+            if (questionType== "Single")//单选
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("单选").Data.ToString();
+            }
+            if (questionType == "Multiple")//多选
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("多选").Data.ToString();
+            }
+            if (questionType == "Judge")//判断
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("判断").Data.ToString();
+            }
+            if (questionType == "Completion")//填空
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("填空").Data.ToString();
+            }
+            if (questionType == "Case")//案例
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("案例分析").Data.ToString();
+            }
+            if (questionType == "Simple")//简答
+            {
+                questionTypeId = _exerciseTypeService.GetIdByType("简答").Data.ToString();
+            }
+            if (string.IsNullOrEmpty(questionTypeId))
+            {
+                return Result<List<QuestionsDto>>.Fail("不存在该类型试题");
+            }
+            return _exerciseService.GetExercise(questionTypeId);
+        }
+
+        /// <summary>
+        /// 创建答题记录
+        /// </summary>
+        /// <param name="questions"></param>
+        /// <returns></returns>
+        [HttpPost]
+        public Result<bool> RecordAnswer([FromBody]List<string>questions)
+        {
+            return _answerRecordService.AddAnswerRecord(long.Parse(User.Identity.Name), questions);
+        }
+        /// <summary>
+        /// 获取用户各个类型题目已答题数量
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet]
+        public Result<AnswerRecordDto> GetRecordAnser()
+        {
+            return _answerRecordService.GetRecordAnser(long.Parse(User.Identity.Name));
+        }
+
     }
 
     public class LoginReq

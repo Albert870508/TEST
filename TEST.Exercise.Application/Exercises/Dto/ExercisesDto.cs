@@ -9,11 +9,14 @@ namespace TEST.Exercise.Application.Exercises.Dto
     {
         public string Id { get; set; }
         /// <summary>
-        /// 题目类型（单选/多选/判断）
+        /// 题目类型编号（单选/多选/判断）
         /// </summary>
         [Display(Name = "题目类型")]
         [Required]
         public string QuestionTypeId { get; set; }
+        /// <summary>
+        /// 题目类型名称（单选/多选/判断）
+        /// </summary>
         [Display(Name = "题目类型")]
         public string QuestionTypeTitle { get; set; }
         /// <summary>
@@ -44,7 +47,7 @@ namespace TEST.Exercise.Application.Exercises.Dto
         /// <summary>
         /// 考题类型（比如：习近平新时代中国特色社会主义思想、党的十九大精神/就业创业....）
         /// </summary>
-        [Display(Name = "题目类型")]
+        [Display(Name = "考题类型")]
         public string QuestionTypeName { get; set; }
     }
 }

@@ -12,7 +12,7 @@ namespace TEST.Management.Helper
     /// <summary>
     /// 上传题库帮助类
     /// </summary>
-    public class FileHelper
+    public static class FileHelper
     {
         /// <summary>
         /// 通过上传的文件获得试题
@@ -21,7 +21,7 @@ namespace TEST.Management.Helper
         /// <param name="_exerciseTypeService">后端服务接口</param>
         /// <param name="type">试题类型（单选/多选/判断）</param>
         /// <returns></returns>
-        public List<Question> GetQuestionsByFile(string fileName, IExerciseTypeService _exerciseTypeService,string type)
+        public static List<Question> GetQuestionsByFile(string fileName, long questionTypeId=0)//IExerciseTypeService _exerciseTypeService,string type
         {
             List<Question> questions = new List<Question>();
             string content = System.IO.File.ReadAllText(fileName, Encoding.GetEncoding("gb2312"));
@@ -40,7 +40,7 @@ namespace TEST.Management.Helper
                 foreach (Match item in matchCollection)
                 {
                     Question question = new Question();
-                    question.QuestionTypeId = _exerciseTypeService.GetIdByType(questionsType).Data;//题目类型
+                    question.QuestionTypeId = questionTypeId;//_exerciseTypeService.GetIdByType(questionsType).Data;//题目类型
                     question.QuestionTypeName = typeTitle;
                     question.Content = Regex.Match(item.Value, @"[\s\S]*?(?=A)").Value.Trim();
                     question.Content = Regex.Replace(question.Content, @"^\d+[．|.|、]", string.Empty);
@@ -63,7 +63,7 @@ namespace TEST.Management.Helper
         /// </summary>
         /// <param name="option"></param>
         /// <returns></returns>
-        private string GetJsonOption(string option)
+        private static string GetJsonOption(string option)
         {
             option = Regex.Replace(option, @"([A-Z])[．|.|、|]", "\",\"$1\":\"");
             option = option.Replace("\r\n", string.Empty);
@@ -81,7 +81,7 @@ namespace TEST.Management.Helper
         /// </summary>
         /// <param name="content"></param>
         /// <returns></returns>
-        private string HandleContent(string content)
+        private static string HandleContent(string content)
         {
             MatchCollection itemList = Regex.Matches(content, @"解析[\s\S]*?(?=命题单位：)", RegexOptions.IgnoreCase);
             foreach (Match item in itemList)

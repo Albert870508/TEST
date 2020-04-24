@@ -20,21 +20,35 @@ namespace TEST.Exercise.Application.ExerciseType
         {
             return Result<List<QuestionType>>.Success(_QuestionType.GetAllList());          
         }
-
-        public Result<bool> AddTypes(QuestionType questionType)
+        public Result<bool> UpdateScoreAndNumber(QuestionType questionType)
         {
-            if (_QuestionType.Any(q => q.Name == questionType.Name))
+            if (!_QuestionType.Any(q => q.Id == questionType.Id))
             {
-                return Result<bool>.Fail("已存在");
+                return Result<bool>.Fail("类型不存在");
             }
             else
             {
-                _QuestionType.Insert(questionType);
-                _unitOfWork.SaveChanges();
-                return Result<bool>.Success(true);
-            }
-        }
+                try
+                {
+                    var thisQuestionType = _QuestionType.Get(questionType.Id);
+                    thisQuestionType.Number = questionType.Number;
+                    thisQuestionType.Score = questionType.Score;
+                    _QuestionType.Update(thisQuestionType);
+                    _unitOfWork.SaveChanges();
+                    return Result<bool>.Success(true);
+                }
+                catch
+                {
 
+                    return Result<bool>.Fail("修改失败");
+                }
+            }
+        }        
+        /// <summary>
+        /// 根据题目名称获取题目编号
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
         public Result<long> GetIdByType(string name)
         {
             if (_QuestionType.Any(q => q.Name == name))

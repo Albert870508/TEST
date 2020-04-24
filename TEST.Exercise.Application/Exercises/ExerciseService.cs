@@ -33,7 +33,7 @@ namespace TEST.Exercise.Application.Exercises
             var query = _Question.GetAll();
             if (!string.IsNullOrEmpty(searchString))
             {
-                query = query.Where(a => a.QuestionTypeName == searchString);
+                query = query.Where(a => a.QuestionTypeId.ToString() == searchString);
             }
             query = query.AsQueryable();
 

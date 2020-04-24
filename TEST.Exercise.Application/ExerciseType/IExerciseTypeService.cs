@@ -11,8 +11,10 @@ namespace TEST.Exercise.Application.ExerciseType
         /// </summary>
         /// <returns></returns>
         Result<List<QuestionType>> GetExerciseTypes();
-        Result<bool> AddTypes(QuestionType questionType);
+        
         Result<long> GetIdByType(string name);
+
+        Result<bool> UpdateScoreAndNumber(QuestionType questionType);
 
         Result<bool> UpdateQuestionTypeScoreAndNumber(double singleScore,double multipleScore, double judgeScore,
             int singleNumber, int multipleNumber, int judgeNumber);

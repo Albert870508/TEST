@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TEST.EntityFrameworkCore;
 
 namespace TEST.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(TESTDbContext))]
-    partial class TESTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200424092354_addAnswerRecord2")]
+    partial class addAnswerRecord2
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

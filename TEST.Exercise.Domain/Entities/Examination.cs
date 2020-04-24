@@ -12,10 +12,10 @@ namespace TEST.Exercise.Domain.Entities
     {
         private string dayOrWeek;
 
-        ///// <summary>
-        ///// 考试标题(这个字段在数据库中是唯一的)
-        ///// </summary>
-        //public string Title { get; set; }
+        /// <summary>
+        /// 考试名称(这个字段在数据库中是唯一的)
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// 日日学/周周练
