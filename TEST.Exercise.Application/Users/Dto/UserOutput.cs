@@ -16,11 +16,21 @@ namespace TEST.Exercise.Application.Users.Dto
         /// <summary>
         /// 当前用户ID
         /// </summary>
-        public string UserId { get; set; }
+        public string UserName { get; set; }
         /// <summary>
         /// 返回Token
         /// </summary>
         public string Token { get; set; }
+
+        /// <summary>
+        /// 用户手机号
+        /// </summary>
+        public string PhoneNumber { get; set; }
+
+        /// <summary>
+        /// 用户所属部门
+        /// </summary>
+        public string Dempartment { get; set; }
     }
 
     public class UserInput 

@@ -15,6 +15,6 @@ namespace TEST.Exercise.Application.Scores
         /// </summary>
         /// <param name="scoreIntput"></param>
         /// <returns></returns>
-        Result<Paging<List<ScoreOutput>>> Ranking(ScoreIntput scoreIntput);
+        Result<List<ScoreOutput>> Ranking(ScoreIntput scoreIntput);
     }
 }

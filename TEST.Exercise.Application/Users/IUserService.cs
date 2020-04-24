@@ -22,6 +22,6 @@ namespace TEST.Exercise.Application.Users
         /// </summary>
         /// <param name="userInput"></param>
         /// <returns></returns>
-        Result<bool> ImproveInformation(long UserId,UserInput userInput);
+        Result<LoginOutput> ImproveInformation(long UserId,UserInput userInput);
     }
 }

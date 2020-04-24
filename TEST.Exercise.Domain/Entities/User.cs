@@ -30,6 +30,6 @@ namespace TEST.Exercise.Domain.Entities
         /// <summary>
         /// 部门ID
         /// </summary>        
-        public string DepartmentId { get; set; }
+        public string Department { get; set; }
     }
 }

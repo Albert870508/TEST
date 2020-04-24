@@ -11,7 +11,7 @@ using TEST.Helper;
 
 namespace TEST.Exercise.Application.Examinations
 {
-    public class ExaminationService:IExaminationService
+    public class ExaminationService : IExaminationService
     {
         private readonly IRepository<Examination> _examination;
         private readonly IRepository<Question> _question;
@@ -20,7 +20,7 @@ namespace TEST.Exercise.Application.Examinations
         private readonly IUnitOfWork _unitOfWork;
         public ExaminationService(IRepository<Examination> examination,
             IRepository<Question> question, IRepository<QuestionType> questionType,
-            IRepository<Score> score,IUnitOfWork unitOfWork)
+            IRepository<Score> score, IUnitOfWork unitOfWork)
         {
             _examination = examination;
             _question = question;
@@ -33,30 +33,31 @@ namespace TEST.Exercise.Application.Examinations
         /// </summary>
         /// <param name="dayOrWeek"></param>
         /// <returns></returns>
-        public Result<ExaminationOutPut> TestStart(string dayOrWeek) 
+        public Result<ExaminationOutPut> TestStart(string dayOrWeek)
         {
             string examinationId = string.Empty;//考试编号
-            if (dayOrWeek=="day")
+            if (dayOrWeek == "day")
             {
-                if (_examination.Any(e => e.StartTime >= DateTime.Now.Date && e.EndTime > DateTime.Now))
+                if (_examination.Any(e => e.StartTime >= DateTime.Now.Date && e.EndTime > DateTime.Now && e.DayOrWeek == "day"))
                 {
-                    examinationId = _examination.FirstOrDefault(e => e.EndTime > DateTime.Now).Id.ToString();
+                    examinationId = _examination.FirstOrDefault(e => e.StartTime >= DateTime.Now.Date && e.EndTime > DateTime.Now && e.DayOrWeek == "day").Id.ToString();
                 }
                 else
                 {//如果没有考试添加一条考试记录
-                    examinationId = _examination.InsertAndGetId(new Examination() { StartTime = DateTime.Now, EndTime = DateTime.Now.AddDays(1).Date, Note = string.Empty }).ToString();
+                    examinationId = _examination.InsertAndGetId(new Examination() { StartTime = DateTime.Now, EndTime = DateTime.Now.AddDays(1).Date, Note = string.Empty, DayOrWeek = "day" }).ToString();
                     _unitOfWork.SaveChanges();
                 }
             }
-            if (dayOrWeek=="week")
+            if (dayOrWeek == "week")
             {
-                if (_examination.Any(e => e.StartTime >= DateTimeHelper.GetWeekFirstDayMon(DateTime.Now.Date) && e.EndTime > DateTime.Now))
+                var a = DateTimeHelper.GetWeekFirstDayMon(DateTime.Now.Date);
+                if (_examination.Any(e => e.StartTime >= a && e.EndTime > DateTime.Now && e.DayOrWeek == "week"))
                 {
-                    examinationId = _examination.FirstOrDefault(e => e.EndTime > DateTime.Now).Id.ToString();
+                    examinationId = _examination.FirstOrDefault(e => e.StartTime >= a && e.EndTime > DateTime.Now && e.DayOrWeek == "week").Id.ToString();
                 }
                 else
                 {//如果没有考试添加一条考试记录
-                    examinationId = _examination.InsertAndGetId(new Examination() { StartTime = DateTime.Now, EndTime = DateTimeHelper.GetWeekLastDaySun(DateTime.Now.Date), Note = string.Empty }).ToString();
+                    examinationId = _examination.InsertAndGetId(new Examination() { StartTime = DateTime.Now, EndTime = DateTimeHelper.GetWeekLastDaySun(DateTime.Now.Date), Note = string.Empty, DayOrWeek = "week" }).ToString();
                     _unitOfWork.SaveChanges();
                 }
             }
@@ -85,37 +86,92 @@ namespace TEST.Exercise.Application.Examinations
         /// <param name="userId"></param>
         /// <param name="examinationIntput"></param>
         /// <returns></returns>
-        public Result<double> TestEnd(long userId, ExaminationIntput examinationIntput)
+        public Result<TestEndOutput> TestEnd(long userId, ExaminationIntput examinationIntput)
         {
             Score score = new Score();
-            if (!string.IsNullOrEmpty(examinationIntput.ExaminationId))
+            if (string.IsNullOrEmpty(examinationIntput.ExaminationId))
             {
-                return Result<double>.Fail("该考试不存在");
+                return Result<TestEndOutput>.Fail("该考试不存在");
             }
+
+            var has = false;
+            var thisExamination = _examination.Get(long.Parse(examinationIntput.ExaminationId));
+
+            DateTime timeNow = DateTime.Now.Date;
+            if (_score.Any(s => s.UserId == userId && s.ExaminationId == thisExamination.Id))
+            {
+                has = true;
+                score = _score.GetAll().FirstOrDefault(s => s.UserId == userId && s.ExaminationId == thisExamination.Id);
+            }
+
             score.UserId = userId;
-            score.ExaminationId = long.Parse(examinationIntput.ExaminationId);
-            string scoreContent = string.Empty;
+            score.ExaminationId = thisExamination.Id;
+            score.DayOrWeek = thisExamination.DayOrWeek;
+            string scoreContent = "[";
             double totalScore = 0;
+            var types = _questionType.GetAll().ToList();
+
+            var error = 0;
+
+            List<QuestionStringId> ErrorQuestion = new List<QuestionStringId>();
+
+
+            ExaminationOutPut questionsResult = new ExaminationOutPut();
+            var single = _questionType.FirstOrDefault(q => q.Name == "单选");//单选题数量
+            var multiple = _questionType.FirstOrDefault(q => q.Name == "多选");//多选题数量
+            var judge = _questionType.FirstOrDefault(q => q.Name == "判断");//判断题数量
+
             foreach (QuestionAndInputAnswer item in examinationIntput.questionAndInputAnswers)
             {
-                scoreContent += item.QuestionItemId.TrimEnd() + "###" + item.InputAnswer.TrimEnd() + "&&&";
-                if (item.InputAnswer.TrimEnd()==_question.Get(long.Parse(item.QuestionItemId)).Answer)
+                //item.QuestionItemId.TrimEnd() + "###" + item.InputAnswer.TrimEnd() + "&&&"
+                scoreContent += "{\"" + item.QuestionItemId + "\":\"" + item.InputAnswer + "\"},";
+                var thisQuestion = _question.Get(long.Parse(item.QuestionItemId));
+                if (item.InputAnswer.TrimEnd() == thisQuestion.Answer)
                 {
-                    totalScore += _questionType.Get(_question.Get(long.Parse(item.QuestionItemId)).QuestionTypeId).Score;
+                    totalScore += types.FirstOrDefault(m => m.Id == thisQuestion.QuestionTypeId).Score;
+
                 }
-                
+                else
+                {
+                    ErrorQuestion.Add(new QuestionStringId()
+                    {
+                        StrId = thisQuestion.Id.ToString(),
+                        Content = thisQuestion.Content,
+                        Options = thisQuestion.Options,
+                        AnswerNote = thisQuestion.AnswerNote,
+                        QuestionType = thisQuestion.QuestionTypeId == single.Id ? "单选" : thisQuestion.QuestionTypeId == multiple.Id ? "多选" : "判断",
+                        Answer = thisQuestion.Answer,
+                        MyAnswer = item.InputAnswer
+                    });
+                    error++;
+                }
             }
+            scoreContent = scoreContent.Substring(0, scoreContent.Length - 1);
+            scoreContent += "]";
             score.Content = scoreContent;
             score.TotalScore = totalScore;
             try
             {
-                _score.Insert(score);
+                if (has)
+                {
+                    _score.Update(score);
+                }
+                else
+                {
+                    _score.Insert(score);
+                }
                 _unitOfWork.SaveChanges();
-                return Result<double>.Success(totalScore);
+                return Result<TestEndOutput>.Success(new TestEndOutput()
+                {
+                    Toal = examinationIntput.questionAndInputAnswers.Count(),
+                    Error = error,
+                    Score = totalScore,
+                    ErrorQuestion = ErrorQuestion
+                }); ;
             }
-            catch 
+            catch
             {
-                return Result<double>.Fail("");                
+                return Result<TestEndOutput>.Fail("");
             }
         }
 
@@ -125,17 +181,28 @@ namespace TEST.Exercise.Application.Examinations
         /// <returns></returns>
         public ExaminationOutPut GetQuestions()
         {
+
+
             ExaminationOutPut questionsResult = new ExaminationOutPut();
-            int singleNumber = _questionType.FirstOrDefault(q => q.Name == "单选").Number;//单选题数量
-            int multipleNumber = _questionType.FirstOrDefault(q => q.Name == "多选").Number;//多选题数量
-            int judgeNumber = _questionType.FirstOrDefault(q => q.Name == "判断").Number;//判断题数量
-            List<Question> questionList = _question.GetAll().Where(q => q.QuestionTypeName == "单选").OrderBy(q => Guid.NewGuid()).Take(singleNumber).ToList();
-            questionList.AddRange( _question.GetAll().Where(q => q.QuestionTypeName == "多选").OrderBy(q => Guid.NewGuid()).Take(multipleNumber).ToList());
-            questionList.AddRange(_question.GetAll().Where(q => q.QuestionTypeName == "判断").OrderBy(q => Guid.NewGuid()).Take(judgeNumber).ToList());
-            foreach (Question question in questionList)
+            var single = _questionType.FirstOrDefault(q => q.Name == "单选");//单选题数量
+            var multiple = _questionType.FirstOrDefault(q => q.Name == "多选");//多选题数量
+            var judge = _questionType.FirstOrDefault(q => q.Name == "判断");//判断题数量
+            List<Question> questionList = _question.GetAll().Where(q => q.QuestionTypeId == single.Id).OrderBy(q => Guid.NewGuid()).Take(single.Number).ToList();
+            questionList.AddRange(_question.GetAll().Where(q => q.QuestionTypeId == multiple.Id).OrderBy(q => Guid.NewGuid()).Take(multiple.Number).ToList());
+            questionList.AddRange(_question.GetAll().Where(q => q.QuestionTypeId == judge.Id).OrderBy(q => Guid.NewGuid()).Take(judge.Number).ToList());
+
+            questionsResult.QuestionItems = questionList.Select(item =>
             {
-                questionsResult.QuestionItems.Add(new QuestionItem() { QuestionItemId=question.Id.ToString(),  QuestionItemContent=question.Content, QuestionItemType=question.QuestionTypeName });
-            }
+                return new QuestionStringId()
+                {
+                    StrId = item.Id.ToString(),
+                    Content = item.Content,
+                    Options = item.Options,
+                    AnswerNote = item.AnswerNote,
+                    QuestionType = item.QuestionTypeId == single.Id ? "单选" : item.QuestionTypeId == multiple.Id ? "多选" : "判断"
+                };
+            }).ToList();
+
             return questionsResult;
         }
 
@@ -149,9 +216,9 @@ namespace TEST.Exercise.Application.Examinations
                 _unitOfWork.SaveChanges();
                 return Result<bool>.Success(true);
             }
-            catch(Exception e)
+            catch (Exception e)
             {
-                return Result<bool>.Fail("添加失败:"+e.Message);
+                return Result<bool>.Fail("添加失败:" + e.Message);
             }
         }
     }

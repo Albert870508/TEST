@@ -3,15 +3,17 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TEST.EntityFrameworkCore;
 
 namespace TEST.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(TESTDbContext))]
-    partial class TESTDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200421175636_add options")]
+    partial class addoptions
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -70,9 +72,6 @@ namespace TEST.EntityFrameworkCore.Migrations
 
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
-
-                    b.Property<string>("DayOrWeek")
-                        .HasColumnType("nvarchar(max)");
 
                     b.Property<DateTime>("EndTime")
                         .HasColumnType("datetime2");
@@ -165,9 +164,6 @@ namespace TEST.EntityFrameworkCore.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("DayOrWeek")
-                        .HasColumnType("nvarchar(max)");
-
                     b.Property<long>("ExaminationId")
                         .HasColumnType("bigint");
 
@@ -193,7 +189,7 @@ namespace TEST.EntityFrameworkCore.Migrations
                     b.Property<DateTime>("CreateTime")
                         .HasColumnType("datetime2");
 
-                    b.Property<string>("Department")
+                    b.Property<string>("DepartmentId")
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("PhoneNumber")

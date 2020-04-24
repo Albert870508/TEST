@@ -19,11 +19,11 @@ namespace HDSLJ.MiniApp.Web.Helper
         /// <summary>
         /// 小程序的ID
         /// </summary>
-        private readonly static string _appId = "wx4e45c24414f9ef1f";
+        private readonly static string _appId = "wxf5fc3eb16bb546ec";
         /// <summary>
         /// 小程序的秘钥
         /// </summary>
-        private readonly static string _appSecret = "9314894e759ba595497148c64c6180b9";
+        private readonly static string _appSecret = "a8493ee1e8c5c6f49d750f60e75966ca";
 
         /// <summary>
         /// 微信服务的地址

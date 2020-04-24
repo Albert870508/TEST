@@ -28,5 +28,7 @@ namespace TEST.Exercise.Domain.Entities
         /// 总得分
         /// </summary>
         public double TotalScore { get; set; }
+
+        public string DayOrWeek { get; set; }
     }
 }

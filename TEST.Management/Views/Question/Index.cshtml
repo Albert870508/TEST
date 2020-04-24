@@ -1,4 +1,4 @@
-﻿@model IPagedList<TEST.Exercise.Domain.Entities.Question>
+﻿@model IPagedList<TEST.Exercise.Application.Exercises.Dto.QuestionsDto>
 @using X.PagedList.Mvc.Core;
 @using X.PagedList;
 @using X.PagedList.Mvc.Core.Common;
@@ -65,7 +65,7 @@
                                 <input id="selectAllBox" type="checkbox" value="false" />
                             </th>
                             <th width="10%">
-                                <label asp-for="@Model.FirstOrDefault().QuestionTypeName"></label>
+                                <label asp-for="@Model.FirstOrDefault().QuestionTypeTitle"></label>
                             </th>
                             <th width="35%">
                                 <label asp-for="@Model.FirstOrDefault().Content"></label>
@@ -91,7 +91,7 @@
                                         @Html.CheckBox("QuestionSelect", false, new { caId = item.Id })
                                     </td>
                                     <td style="vertical-align:middle">
-                                        @Html.DisplayFor(modelItem => item.QuestionTypeName)
+                                        @Html.DisplayFor(modelItem => item.QuestionTypeTitle)
                                     </td>
                                     <td style="vertical-align:middle">
                                         @Html.DisplayFor(modelItem => item.Content)
@@ -124,7 +124,7 @@
                     </tfoot>
                 </table>
                 @*@Html.PagedListPager(Model, page => Url.Action("Index", new { page, sortOrder = ViewData["CurrentSort"], searchString = ViewData["SearchString"], pageSize = ViewData["PageSize"] }), new PagedListRenderOptions { LinkToFirstPageFormat = "首页", LinkToNextPageFormat = "下一页", LinkToPreviousPageFormat = "上一页", LinkToLastPageFormat = "末页", MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false })*@
-                @Html.PagedListPager((IPagedList<TEST.Exercise.Domain.Entities.Question>)Model, pageIndex => Url.Action("Index", new { pageIndex, pageSize = @ViewData["PageSize"], searchString = ViewData["SearchString"] }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { LinkToFirstPageFormat = "首页", LinkToNextPageFormat = "下一页", LinkToPreviousPageFormat = "上一页", LinkToLastPageFormat = "末页", MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false, DisplayPageCountAndCurrentLocation = true, UlElementClasses = new[] { "pagination" }, ContainerDivClasses = new[] { "pagination-container" } }, new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "questionListContainer" }))
+                @Html.PagedListPager((IPagedList<TEST.Exercise.Application.Exercises.Dto.QuestionsDto>)Model, pageIndex => Url.Action("Index", new { pageIndex, pageSize = @ViewData["PageSize"], searchString = ViewData["SearchString"] }), PagedListRenderOptions.EnableUnobtrusiveAjaxReplacing(new PagedListRenderOptions { LinkToFirstPageFormat = "首页", LinkToNextPageFormat = "下一页", LinkToPreviousPageFormat = "上一页", LinkToLastPageFormat = "末页", MaximumPageNumbersToDisplay = 5, DisplayItemSliceAndTotal = false, DisplayPageCountAndCurrentLocation = true, UlElementClasses = new[] { "pagination" }, ContainerDivClasses = new[] { "pagination-container" } }, new AjaxOptions() { HttpMethod = "GET", UpdateTargetId = "questionListContainer" }))
             </div>
         </div>
     </div>

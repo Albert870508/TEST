@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using TEST.Api.Input;
 using TEST.Api.Result;
+using TEST.Exercise.Application.Exercises.Dto;
 using TEST.Exercise.Domain.Entities;
 
 namespace TEST.Exercise.Application.Exercises
@@ -13,7 +14,7 @@ namespace TEST.Exercise.Application.Exercises
         /// 获取题库中所有题目
         /// </summary>
         /// <returns></returns>
-        Result<List<Question>> GetExercise(string searchString);
+        Result<List<QuestionsDto>> GetExercise(string searchString);
         /// <summary>
         /// 根据题目类型获取对应题目
         /// </summary>

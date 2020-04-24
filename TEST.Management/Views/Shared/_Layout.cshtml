@@ -24,7 +24,7 @@
             <div class="container">
                 &copy; 后台管理系统 - <a asp-area="" asp-controller="Home" asp-action="Privacy">版权</a>
             </div>
-        </footer>*@
+    </footer>*@
     <script src="~/lib/jquery/dist/jquery.min.js"></script>
     <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
     <script src="~/js/site.js" asp-append-version="true"></script>
@@ -44,6 +44,9 @@
             });
             $("#Department").click(function () {
                 $("#ActionPanel").load("Department/Index");
+            });
+            $("#ScoreRanking").click(function () {
+                $("#ActionPanel").load("Score/Index?pageIndex=1&dayOrWeek=day");
             });
         })
     </script>

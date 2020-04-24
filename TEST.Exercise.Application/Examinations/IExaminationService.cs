@@ -19,7 +19,7 @@ namespace TEST.Exercise.Application.Examinations
         /// 交卷接口
         /// </summary>
         /// <returns></returns>
-        Result<double> TestEnd(long userId, ExaminationIntput examinationIntput);
+        Result<TestEndOutput> TestEnd(long userId, ExaminationIntput examinationIntput);
 
         Result<bool> AddExamination(Examination examination);
     }

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using TEST.Exercise.Domain.Entities;
 
 namespace TEST.Exercise.Application.Examinations.Dto
 {
@@ -16,8 +17,17 @@ namespace TEST.Exercise.Application.Examinations.Dto
         /// <summary>
         /// 返回考试内容（题目和类型）
         /// </summary>
-        public List<QuestionItem> QuestionItems { get; set; }
-        
+        public List<QuestionStringId> QuestionItems { get; set; }
+
+    }
+
+    public class QuestionStringId : Question
+    {
+        public string StrId { get; set; }
+
+        public string QuestionType { get; set; }
+
+        public string MyAnswer { get; set; }
     }
 
     public class QuestionItem
@@ -49,9 +59,23 @@ namespace TEST.Exercise.Application.Examinations.Dto
 
     }
 
+    public class TestEndOutput
+    {
+        /// <summary>
+        /// 总数
+        /// </summary>
+        public int Toal { get; set; }
+
+        public int Error { get; set; }
+
+        public double Score { get; set; }
+
+        public List<QuestionStringId> ErrorQuestion { get; set; }
+    }
+
     public class QuestionAndInputAnswer
     {
-        
+
         /// <summary>
         /// 题目编号
         /// </summary>
